@@ -1,0 +1,59 @@
+<div class="main-container">
+    <h2>Upcoming Meetings</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>S.No</th>
+                <th>User Name</th>
+                <th>Title</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Room</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let meeting of upcomingMeetings; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ meeting.userName }}</td>
+                <td>{{ meeting.title }}</td>
+                <td>{{ meeting.date }}</td>
+                <td>{{ meeting.startTime }} - {{ meeting.endTime }}</td>
+                <td>{{ meeting.room }}</td>
+                <td>
+                    <a href="" (click)="deleteMeeting(i)">Delete</a> 
+                  </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Rooms Meeting Details</h3>
+    <div *ngFor="let room of getRoomSlot()">
+        <h4>Room {{ room }}</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>User Name</th>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let meeting of meetingsByRoom[room]; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ meeting.userName }}</td>
+                    <td>{{ meeting.title }}</td>
+                    <td>{{ meeting.date }}</td>
+                    <td>{{ meeting.startTime }} - {{ meeting.endTime }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Book a Meeting Room</h3>
+    <button (click)="openBookingPopup()">Book Meeting</button>
+
+    <app-book-meeting *ngIf="showPopup" (closePopup)="closeBookingPopup()"></app-book-meeting>
+</div>

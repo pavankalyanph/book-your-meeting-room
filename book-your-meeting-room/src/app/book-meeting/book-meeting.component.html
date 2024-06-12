@@ -1,0 +1,38 @@
+<div class="popup-overlay">
+    <div class="popup-content">
+        <span class="close-button" (click)="onClose()">&times;</span>
+        <h2>Book a Meeting Room</h2>
+        <form [formGroup]="meetingForm" (ngSubmit)="onSubmit()">
+            <div>
+                <label for="username">Username</label>
+                <input id="username" formControlName="username" required>
+            </div>
+            <div>
+                <label for="meeting-date">Meeting Date</label>
+                <input id="meeting-date" type="date" formControlName="meetingDate" required>
+            </div>
+            <div>
+                <label for="startTime">Start Time</label>
+                <input type="time" id="startTime" formControlName="startTime">
+            </div>
+            <div>
+                <label for="endTime">End Time</label>
+                <input type="time" id="endTime" formControlName="endTime">
+            </div>
+            <div *ngIf="areFieldsValid()">
+                <div>
+                    <label for="room-number">Room Number</label>
+                    <select id="room-number" formControlName="roomNumber" required>
+                        <option *ngFor="let room of availableRooms" [value]="room">{{room}}</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="agenda">Agenda</label>
+                    <input id="agenda" formControlName="agenda" required>
+                </div>
+                <button type="submit" [disabled]="!meetingForm.valid">Book</button>
+            </div>
+            <button type="submit" [disabled]="!meetingForm.valid">Book</button>
+        </form>
+    </div>
+</div>

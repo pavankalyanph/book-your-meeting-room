@@ -1,0 +1,35 @@
+.main-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.meeting,
+.meeting-details {
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
+}
+
+.meeting-details p {
+    margin: 5px 0;
+}
+
+button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    z-index: 100;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+h4 {
+    margin-top: 20px;
+}
