@@ -8,9 +8,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class BookMeetingComponent {
   @Output() closePopup = new EventEmitter<void>();
+  @Output() meetingBooked = new EventEmitter<any>();
 
   // Define form group
   meetingForm: FormGroup;
+  allFeildsValid: boolean = false;
 
   availableRooms: string[] = ['Room 1', 'Room 2', 'Room 3', 'Room 4', 'Room 5', 'Room 6', 'Room 7', 'Room 8', 'Room 9', 'Room 10'];
 
@@ -49,46 +51,45 @@ export class BookMeetingComponent {
 
   // Custom validation for start time less than end time
 validateTimeRange() {
-  const startTime = this.meetingForm.get('startTime')?.value;
-  const endTimeControl = this.meetingForm.get('endTime');
-  
-  if (endTimeControl) {
-    const endTime = endTimeControl.value;
-    
-    if (startTime >= endTime) {
-      endTimeControl.setErrors({ invalidTimeRange: true });
-    } else {
-      endTimeControl.setErrors(null);
+  if (this.meetingForm.value.startTime && this.meetingForm.value.endTime) {
+    let timeStart = new Date()
+    let timeEnd = new Date()
+    timeStart.setHours(this.meetingForm.value.startTime?.split(':')[0], this.meetingForm.value.startTime?.split(':')[1], 0, 0)
+    timeEnd.setHours(this.meetingForm.value.endTime?.split(':')[0], this.meetingForm.value.endTime?.split(':')[1], 0, 0)
+    if (this.meetingForm.value.startTime >= this.meetingForm.value.endTime) {
+      this.meetingForm.controls['endTime'].setErrors({ invalidTimeRange: true });
     }
+    else if (((Number(timeEnd) - Number(timeStart))/60000) < 30) {
+      this.meetingForm.controls['endTime'].setErrors({ invalidTimeInterval: true });
+    }
+    else {
+      this.meetingForm.controls['endTime'].setErrors(null);
+    }
+    this.areFieldsValid()
   }
 }
 
 
 // Custom validation for agenda and room selection visibility
-areFieldsValid(): boolean {
-  const startTimeControl = this.meetingForm.get('startTime');
-  const endTimeControl = this.meetingForm.get('endTime');
-  const meetingDateControl = this.meetingForm.get('meetingDate');
-
-  // Perform null check before accessing values
-  if (startTimeControl && endTimeControl && meetingDateControl) {
-    const isValidMeetingDate = meetingDateControl.valid ?? false;
-    return (
-      this.meetingForm.valid &&
-      startTimeControl.value < endTimeControl.value &&
-      isValidMeetingDate
-    );
+areFieldsValid(): void {
+  if (this.meetingForm.controls['meetingDate'].valid && this.meetingForm.controls['startTime'].valid && this.meetingForm.controls['endTime'].valid) {
+    if (this.meetingForm.value.startTime <= this.meetingForm.value.endTime) {
+      this.allFeildsValid = true
+      return
+    }
   }
-  return false;
+  this.allFeildsValid = false
 }
 
 
-  onSubmit() {
-    if (this.meetingForm.valid) {
-      // Do something with the form data
-      console.log(this.meetingForm.value);
-    }
+onSubmit() {
+  if (this.meetingForm.valid) {
+    const meetings = JSON.parse(sessionStorage.getItem('meetings') || '[]');
+    meetings.push(this.meetingForm.value);
+    sessionStorage.setItem('meetings', JSON.stringify(meetings));
+    this.closePopup.emit();
   }
+}
 
   clearForm(): void {
     this.meetingForm.reset();

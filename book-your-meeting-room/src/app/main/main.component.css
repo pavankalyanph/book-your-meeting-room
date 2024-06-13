@@ -1,5 +1,5 @@
 .main-container {
-    max-width: 800px;
+    width: 80%;
     margin: 50px auto;
     padding: 20px;
     border: 1px solid #ccc;
@@ -32,4 +32,12 @@ button:hover {
 
 h4 {
     margin-top: 20px;
+}
+.addbutton{
+    margin-left: 18rem;
+    display: flex;
+}
+table{
+    width: 100%;
+    text-align: center;
 }

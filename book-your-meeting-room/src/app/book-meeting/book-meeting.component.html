@@ -7,32 +7,53 @@
                 <label for="username">Username</label>
                 <input id="username" formControlName="username" required>
             </div>
-            <div>
-                <label for="meeting-date">Meeting Date</label>
-                <input id="meeting-date" type="date" formControlName="meetingDate" required>
-            </div>
-            <div>
-                <label for="startTime">Start Time</label>
-                <input type="time" id="startTime" formControlName="startTime">
-            </div>
-            <div>
-                <label for="endTime">End Time</label>
-                <input type="time" id="endTime" formControlName="endTime">
-            </div>
-            <div *ngIf="areFieldsValid()">
-                <div>
-                    <label for="room-number">Room Number</label>
-                    <select id="room-number" formControlName="roomNumber" required>
-                        <option *ngFor="let room of availableRooms" [value]="room">{{room}}</option>
-                    </select>
+            <div class="date-time-row">
+                <div class="date-time-column">
+                    <label for="meeting-date">Meeting Date</label>
+                    <input id="meeting-date" type="date" formControlName="meetingDate" required>
                 </div>
-                <div>
-                    <label for="agenda">Agenda</label>
-                    <input id="agenda" formControlName="agenda" required>
+                <div class="date-time-column">
+                    <label for="startTime">Start Time</label>
+                    <input type="time" id="startTime" formControlName="startTime" (change)="validateTimeRange()" required>
                 </div>
-                <button type="submit" [disabled]="!meetingForm.valid">Book</button>
+                <div class="date-time-column">
+                    <label for="endTime">End Time</label>
+                    <input type="time" id="endTime" formControlName="endTime" (change)="validateTimeRange()" required>
+                </div>
+                
             </div>
-            <button type="submit" [disabled]="!meetingForm.valid">Book</button>
+            <div>
+                <!-- for alignment I wrote like this or else we have to write exact below the input -->
+                <small *ngIf="meetingForm.controls['meetingDate'].touched && !meetingForm.controls['meetingDate'].valid">
+                    Date should be in range of Monday to Friday
+                </small>
+                <small *ngIf="meetingForm.controls['startTime'].touched && !meetingForm.controls['startTime'].valid">
+                    Select Time Range between 9AM - 6PM
+                </small>
+                <small *ngIf="meetingForm.controls['startTime'].touched && meetingForm.controls['startTime'].hasError('invalidTime')">
+                    Select Time Range between 9AM - 6PM
+                </small>
+                <small *ngIf="meetingForm.controls['endTime'].touched && meetingForm.controls['endTime'].hasError('invalidTime')">
+                    Select Time Range between 9AM - 6PM
+                </small>
+                <small *ngIf="meetingForm.controls['endTime'].touched && meetingForm.controls['endTime'].hasError('invalidTimeRange')">
+                    Start time should be less than end time
+                </small>
+                <small *ngIf="meetingForm.controls['endTime'].touched && meetingForm.controls['endTime'].hasError('invalidTimeInterval')">
+                    Meeting duration should be at least 30 mins
+                </small>
+            </div>
+            <div *ngIf="allFeildsValid">
+                <label for="room-number">Room Number</label>
+                <select id="room-number" formControlName="roomNumber" required>
+                    <option *ngFor="let room of availableRooms" [value]="room">{{room}}</option>
+                </select>
+            </div>
+            <div *ngIf="allFeildsValid">
+                <label for="agenda">Agenda</label>
+                <input id="agenda" formControlName="agenda" required>
+            </div>
+            <button type="submit" [disabled]="!meetingForm.valid">Book Meeting</button>
         </form>
     </div>
 </div>

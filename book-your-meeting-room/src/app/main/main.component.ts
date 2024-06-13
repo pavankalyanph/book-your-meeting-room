@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 
 export interface Meeting {
-  userName: string;
-  title: string;
-  date: string;
+  username: string;
+  agenda: string;
+  meetingDate: string;
   startTime: string;
   endTime: string;
-  room: number;
+  roomNumber: string;
 }
 
 @Component({
@@ -15,9 +15,9 @@ export interface Meeting {
   styleUrls: ['./main.component.css']
 })
 export class MainComponent implements OnInit {
-  loggedInUser: string | null = null;
   upcomingMeetings: Meeting[] = [];
-  meetingsByRoom: { [key: number]: Meeting[] } = {};
+  meetingsByRoom: { [key: string]: Meeting[] } = {};
+  filteredRooms: string[] = [];
   showPopup: boolean = false;
 
   ngOnInit() {
@@ -28,21 +28,17 @@ export class MainComponent implements OnInit {
     const meetings = JSON.parse(sessionStorage.getItem('meetings') || '[]');
     this.upcomingMeetings = meetings;
     this.organizeMeetingsByRoom();
+    this.filteredRooms = this.getRoomSlot();
   }
 
   organizeMeetingsByRoom() {
     this.meetingsByRoom = {};
     this.upcomingMeetings.forEach(meeting => {
-      if (!this.meetingsByRoom[meeting.room]) {
-        this.meetingsByRoom[meeting.room] = [];
+      if (!this.meetingsByRoom[meeting.roomNumber]) {
+        this.meetingsByRoom[meeting.roomNumber] = [];
       }
-      this.meetingsByRoom[meeting.room].push(meeting);
+      this.meetingsByRoom[meeting.roomNumber].push(meeting);
     });
-  }
-
-  logout() {
-    this.loggedInUser = null;
-    // Any additional logout logic here
   }
 
   openBookingPopup() {
@@ -55,11 +51,21 @@ export class MainComponent implements OnInit {
   }
 
   getRoomSlot() {
-    return Object.keys(this.meetingsByRoom).map(Number);
+    return Object.keys(this.meetingsByRoom).sort((a, b) => Number(a.split(' ')[1]) - Number(b.split(' ')[1]));
+  }
+
+  filterMeetingsByRoom(event: any) {
+    const selectedRoom = event.target.value;
+    if (selectedRoom) {
+      this.filteredRooms = [selectedRoom];
+    } else {
+      this.filteredRooms = this.getRoomSlot();
+    }
   }
 
   deleteMeeting(index: number) {
     this.upcomingMeetings.splice(index, 1);
     sessionStorage.setItem('meetings', JSON.stringify(this.upcomingMeetings));
+    this.loadMeetings();
   }
 }
