@@ -27,9 +27,6 @@
                 <small *ngIf="meetingForm.controls['meetingDate'].touched && !meetingForm.controls['meetingDate'].valid">
                     Date should be in range of Monday to Friday
                 </small>
-                <small *ngIf="meetingForm.controls['startTime'].touched && !meetingForm.controls['startTime'].valid">
-                    Select Time Range between 9AM - 6PM
-                </small>
                 <small *ngIf="meetingForm.controls['startTime'].touched && meetingForm.controls['startTime'].hasError('invalidTime')">
                     Select Time Range between 9AM - 6PM
                 </small>

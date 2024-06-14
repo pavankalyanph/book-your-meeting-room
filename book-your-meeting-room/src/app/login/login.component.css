@@ -10,6 +10,10 @@
     align-items: right;
 }
 
+.cred{
+    text-align: center;
+}
+
 form div {
     margin-bottom: 15px;
 }
